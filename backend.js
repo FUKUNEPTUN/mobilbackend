@@ -9,13 +9,15 @@ connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'library'
+  database: 's62_db'
 })
 connection.connect()
 }
 
 
 app.use(express.static('kepek2'))
+app.use(express.static('konyvkep'))
+app.use(express.static('irokep'))
 app.use(express.json())
 app.use(cors())
 app.get('/', (req, res) => {
@@ -37,6 +39,14 @@ app.get('/iro', (req, res) => {
   app.get('/mufaj', (req, res) => {
     kapcsolat()
     connection.query('SELECT * FROM `mufaj` ', (err, rows, fields) => {
+      if (err) throw err
+      res.send(rows)
+    })
+    connection.end()
+  })
+  app.post('/irokonyv', (req, res) => {
+    kapcsolat()
+    connection.query('SELECT * FROM konyv_profil WHERE iro_id = '+req.body.bevitel1+';', (err, rows, fields) => {
       if (err) throw err
       res.send(rows)
     })
