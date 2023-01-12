@@ -18,6 +18,7 @@ connection.connect()
 app.use(express.static('mufajkep'))
 app.use(express.static('irokep'))
 app.use(express.static('konyvkep'))
+app.use(express.static('profilkep'))
 app.use(express.json())
 app.use(cors())
 
@@ -54,7 +55,7 @@ kapcsolat()
   })
   app.post('/iroprofilkonyv', (req, res) => {
     kapcsolat()
-        connection.query('SELECT iro_profil.iro_id,iro_profil.iro_kep,iro_profil.iro_leiras,konyv_profil.kp_kep,iro_profil.iro_neve,konyv_profil.konyv_cime,konyv_profil.kp_id FROM iro_profil INNER JOIN konyv_profil ON konyv_profil.iro_id=iro_profil.iro_id WHERE iro_profil.iro_id = '+req.body.bevitel1, function (err, rows, fields) {
+        connection.query('SELECT * FROM iro_profil INNER JOIN konyv_profil ON konyv_profil.iro_id=iro_profil.iro_id WHERE iro_profil.iro_id = '+req.body.bevitel1, function (err, rows, fields) {
           if (err) 
             console.log( err)
           else{
@@ -114,8 +115,50 @@ kapcsolat()
         })
         connection.end()
       })
+      app.post('/tagprofil', (req, res) => {
+        kapcsolat()
+            connection.query('SELECT * FROM tag_profil', function (err, rows, fields) {
+              if (err) 
+                console.log( err)
+              else{
+              console.log(rows)
+              res.send(rows)}
+              
+            })
+            
+            connection.end()
+            
+          })
 
+      app.post('/tagprofilkonyv', (req, res) => {
+        kapcsolat()
+            connection.query('SELECT * FROM kolcsonzes INNER JOIN konyv_profil AS fika ON fika.kp_id = kolcsonzes.kp_id INNER JOIN tag_profil AS akif on kolcsonzes.tp_id = akif.tp_id  ', function (err, rows, fields) {
+              if (err) 
+                console.log( err)
+              else{
+              console.log(rows)
+              res.send(rows)}
+              
+            })
+            
+            connection.end()
+            
+          })
+          app.post('/foglalasupdate', (req, res) => {
+            kapcsolat()
+                connection.query('UPDATE kolcsonzes SET k_lejar = "2023-01-28" WHERE kolcsonzes.k_id = 1 AND kolcsonzes.tp_id = 1', function (err, rows, fields) {
+                  if (err) 
+                  res.send(result.affectedRows + " record(s) updated")
 
+                  else{
+                  console.log(rows)
+                  res.send(rows)}
+                  
+                })
+                
+                connection.end()
+                
+              })
 
 
 
