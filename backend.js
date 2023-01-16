@@ -3,15 +3,15 @@ var cors = require('cors')
 const mysql = require('mysql')
 const app = express()
 const port = 3000
-var connection 
-function kapcsolat(){
-connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 's62_db'
-})
-connection.connect()
+var connection
+function kapcsolat() {
+  connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 's62_db'
+  })
+  connection.connect()
 }
 
 
@@ -29,136 +29,146 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`http://localhost:${port}/`)
 })
-
+/*----------------------------------Író profilhoz tartozó lekérdezések-------------------------------------------------------*/
 app.get('/iro', (req, res) => {
-  kapcsolat()  
-    connection.query('SELECT * FROM iro_profil ORDER BY `iro_profil`.`iro_neve` ASC', (err, rows, fields) => {
-      if (err) throw err
-      res.send(rows)
-    })
-    connection.end()
+  kapcsolat()
+  connection.query('SELECT * FROM iro_profil ORDER BY `iro_profil`.`iro_neve` ASC', (err, rows, fields) => {
+    if (err) throw err
+    res.send(rows)
   })
+  connection.end()
+})
 
-  app.post('/iroprofil', (req, res) => {
-kapcsolat()
-    connection.query('SELECT iro_profil.iro_id,iro_profil.iro_kep,iro_profil.iro_leiras,iro_profil.iro_neve FROM iro_profil WHERE iro_profil.iro_id = '+req.body.bevitel1, function (err, rows, fields) {
-      if (err) 
-        console.log( err)
-      else{
+app.post('/iroprofil', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT iro_profil.iro_id,iro_profil.iro_kep,iro_profil.iro_leiras,iro_profil.iro_neve FROM iro_profil WHERE iro_profil.iro_id = ' + req.body.bevitel1, function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
       console.log(rows)
-      res.send(rows)}
-      
-    })
-    
-    connection.end()
-    
-  })
-  app.post('/iroprofilkonyv', (req, res) => {
-    kapcsolat()
-        connection.query('SELECT * FROM iro_profil INNER JOIN konyv_profil ON konyv_profil.iro_id=iro_profil.iro_id WHERE iro_profil.iro_id = '+req.body.bevitel1, function (err, rows, fields) {
-          if (err) 
-            console.log( err)
-          else{
-          console.log(rows)
-          res.send(rows)}
-          
-        })
-        
-        connection.end()
-        
-      })
-
-  app.get('/mufaj', (req, res) => {
-    kapcsolat()
-    connection.query('SELECT DISTINCT(konyv_profil.mufaj1),mufaj.mufaj_kep,mufaj.mufaj_nev FROM `mufaj` INNER JOIN konyv_profil ON mufaj.mufaj_id = konyv_profil.mufaj1;', (err, rows, fields) => {
-      if (err) throw err
       res.send(rows)
-    })
-    connection.end()
+    }
+
   })
-  app.post('/mufajkonyv', (req, res) => {
-    kapcsolat()
-        connection.query('SELECT konyv_profil.kp_id,konyv_profil.konyv_cime,konyv_profil.kp_kep FROM konyv_profil WHERE `mufaj1` = '+req.body.mufajid, function (err, rows, fields) {
-          if (err) 
-            console.log( err)
-          else{
-          console.log(rows)
-          res.send(rows)}
-          
-        })
-        
-        connection.end()
-        
-      })
 
-      app.post('/konyvprofil', (req, res) => {
-        kapcsolat()
-            connection.query('SELECT * FROM konyv_profil WHERE konyv_profil.kp_id =  '+req.body.konyvid, function (err, rows, fields) {
-              if (err) 
-                console.log( err)
-              else{
-              console.log(rows)
-              res.send(rows)}
-              
-            })
-            
-            connection.end()
-            
-          })
-    
+  connection.end()
 
-      app.get('/login', (req, res) => {
-        kapcsolat()
-        connection.query('SELECT * FROM tag_profil', (err, rows, fields) => {
-          if (err) throw err
-          res.send(rows)
-        })
-        connection.end()
-      })
-      app.post('/tagprofil', (req, res) => {
-        kapcsolat()
-            connection.query('SELECT * FROM tag_profil', function (err, rows, fields) {
-              if (err) 
-                console.log( err)
-              else{
-              console.log(rows)
-              res.send(rows)}
-              
-            })
-            
-            connection.end()
-            
-          })
+})
+app.post('/iroprofilkonyv', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM iro_profil INNER JOIN konyv_profil ON konyv_profil.iro_id=iro_profil.iro_id WHERE iro_profil.iro_id = ' + req.body.bevitel1, function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
 
-      app.post('/tagprofilkonyv', (req, res) => {
-        kapcsolat()
-            connection.query('SELECT * FROM kolcsonzes INNER JOIN konyv_profil AS fika ON fika.kp_id = kolcsonzes.kp_id INNER JOIN tag_profil AS akif on kolcsonzes.tp_id = akif.tp_id  ', function (err, rows, fields) {
-              if (err) 
-                console.log( err)
-              else{
-              console.log(rows)
-              res.send(rows)}
-              
-            })
-            
-            connection.end()
-            
-          })
-          app.post('/foglalasupdate', (req, res) => {
-            kapcsolat()
-                connection.query('UPDATE kolcsonzes SET k_lejar = "2023-01-28" WHERE kolcsonzes.k_id = 1 AND kolcsonzes.tp_id = 1', function (err, rows, fields) {
-                  if (err) 
-                  res.send(result.affectedRows + " record(s) updated")
+  })
 
-                  else{
-                  console.log(rows)
-                  res.send(rows)}
-                  
-                })
-                
-                connection.end()
-                
-              })
+  connection.end()
+
+})
+/*----------------------------------Műfajokhoz tartozó lekérdezések-------------------------------------------------------*/
+
+app.get('/mufaj', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT DISTINCT(konyv_profil.mufaj1),mufaj.mufaj_kep,mufaj.mufaj_nev FROM `mufaj` INNER JOIN konyv_profil ON mufaj.mufaj_id = konyv_profil.mufaj1;', (err, rows, fields) => {
+    if (err) throw err
+    res.send(rows)
+  })
+  connection.end()
+})
+app.post('/mufajkonyv', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT konyv_profil.kp_id,konyv_profil.konyv_cime,konyv_profil.kp_kep FROM konyv_profil WHERE `mufaj1` = ' + req.body.mufajid, function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
+/*----------------------------------Könyvprofilhoz tartozó lekérdezések-------------------------------------------------------*/
+
+app.post('/konyvprofil', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM konyv_profil WHERE konyv_profil.kp_id =  ' + req.body.konyvid, function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
+
+/*----------------------------------Felhasználóhoz tartozó lekérdezések pl login, update,regisztráció-------------------------------------------------------*/
+
+app.get('/login', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM tag_profil', (err, rows, fields) => {
+    if (err) throw err
+    res.send(rows)
+  })
+  connection.end()
+})
+app.post('/tagprofil', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM tag_profil', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
+
+app.post('/tagprofilkonyv', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM kolcsonzes INNER JOIN konyv_profil AS fika ON fika.kp_id = kolcsonzes.kp_id INNER JOIN tag_profil AS akif on kolcsonzes.tp_id = akif.tp_id  ', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
+app.post('/foglalasupdate', (req, res) => {
+  kapcsolat()
+  connection.query('UPDATE kolcsonzes SET k_lejar = "2023-01-28" WHERE kolcsonzes.k_id = 1 AND kolcsonzes.tp_id = 1', function (err, rows, fields) {
+    if (err)
+      res.send(result.affectedRows + " record(s) updated")
+
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
 
 
 
