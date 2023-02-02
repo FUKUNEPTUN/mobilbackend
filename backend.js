@@ -73,7 +73,7 @@ app.post('/iroprofilkonyv', (req, res) => {
 
 app.get('/mufaj', (req, res) => {
   kapcsolat()
-  connection.query('SELECT DISTINCT(konyv_profil.mufaj1),mufaj.mufaj_kep,mufaj.mufaj_nev FROM `mufaj` INNER JOIN konyv_profil ON mufaj.mufaj_id = konyv_profil.mufaj1;', (err, rows, fields) => {
+  connection.query('SELECT DISTINCT(konyv_profil.mufaj1),mufaj.mufaj_kep,mufaj.mufaj_nev FROM `mufaj` INNER JOIN konyv_profil ON mufaj.mufaj_id = konyv_profil.mufaj1 ORDER BY `mufaj`.`mufaj_nev` ASC ', (err, rows, fields) => {
     if (err) throw err
     res.send(rows)
   })
