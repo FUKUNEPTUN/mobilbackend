@@ -169,6 +169,109 @@ app.post('/foglalasupdate', (req, res) => {
   connection.end()
 
 })
+// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+app.get('/kotelezo', (req, res) => {
+    
+  kapcsolat()
+  
+  connection.query('SELECT `konyv_cime`,`kp_kep`,`kp_id` FROM `konyv_profil` WHERE `kotelezoolvasmany` = 1 ', function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    res.send(rows)
+  })
+  
+  connection.end()
+
+
+})
+
+
+app.get('/osszes', (req, res) => {
+  
+  kapcsolat()
+  
+  connection.query('SELECT `kp_kep`,`konyv_cime`,`kp_id` FROM `konyv_profil`', function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    res.send(rows)
+  })
+  
+  connection.end()
+
+
+})
+
+app.post('/osszeskereso', (req, res) => {
+  
+  kapcsolat()
+  let parancs = 'SELECT * FROM konyv_profil WHERE konyv_cime LIKE "%'+req.body.bevitel1+'%"'
+  connection.query(parancs, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    res.send(rows)
+  })
+  
+  connection.end()
+
+
+})
+
+
+
+
+app.post('/kereso', (req, res) => {
+  
+  kapcsolat()
+  let parancs = 'SELECT * FROM konyv_profil WHERE kotelezoolvasmany = 1 AND konyv_cime LIKE "%'+req.body.bevitel1+'%"'
+  connection.query(parancs, function (err, rows, fields) {
+    if (err) throw err
+  
+    console.log(rows)
+    res.send(rows)
+  })
+  
+  connection.end()
+
+
+})
+
+
+
+app.post('/konyvprofil', (req, res) => {
+  kapcsolat()
+      connection.query('SELECT * FROM konyv_profil WHERE konyv_profil.kp_id =  '+req.body.konyvid, function (err, rows, fields) {
+        if (err) 
+          console.log( err)
+        else{
+        console.log(rows)
+        res.send(rows)}
+        
+      })
+      
+      connection.end()
+      
+    })
+
+
+
+    app.post('/ujkolcsonzes', (req, res) => {
+
+      kapcsolat()
+      let parancs = "INSERT INTO kolcsonzes VALUES (NULL, '"+req.body.bevitel2+"', '1', '" + req.body.bevitel1  + "', '" + req.body.bevitel1  + "'+INTERVAL 14 DAY)";
+      connection.query(parancs, function (err, rows, fields) {
+        if (err) throw err
+      
+        console.log(rows)
+        res.send(rows)
+      })
+      
+      connection.end()
+  
+  
+    })
 
 
 
