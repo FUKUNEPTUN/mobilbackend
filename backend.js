@@ -81,7 +81,7 @@ app.get('/mufaj', (req, res) => {
 })
 app.post('/mufajkonyv', (req, res) => {
   kapcsolat()
-  connection.query('SELECT konyv_profil.kp_id,konyv_profil.konyv_cime,konyv_profil.kp_kep FROM konyv_profil WHERE `mufaj1` = ' + req.body.mufajid, function (err, rows, fields) {
+  connection.query('SELECT konyv_profil.kp_id,konyv_profil.konyv_cime,konyv_profil.kp_kep,konyv_profil.alcim FROM konyv_profil WHERE `mufaj1` = ' + req.body.mufajid, function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -113,6 +113,21 @@ app.post('/konyvprofil', (req, res) => {
 })
 
 /*----------------------------------Felhasználóhoz tartozó lekérdezések pl login, update,regisztráció-------------------------------------------------------*/
+app.post('/foryou', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM konyv_profil WHERE konyv_profil.mufaj1 = (SELECT tag_profil.kedvenc_m1 FROM tag_profil WHERE tag_profil.tp_id = 1) OR konyv_profil.mufaj1 = (SELECT tag_profil.kedvenc_m2 FROM tag_profil WHERE tag_profil.tp_id = 1) OR konyv_profil.mufaj1 = (SELECT tag_profil.kedvenc_m3 FROM tag_profil WHERE tag_profil.tp_id = 1)  ', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
 
 app.get('/login', (req, res) => {
   kapcsolat()
