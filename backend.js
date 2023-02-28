@@ -98,7 +98,7 @@ app.post('/mufajkonyv', (req, res) => {
 
 app.post('/konyvprofil', (req, res) => {
   kapcsolat()
-  connection.query('SELECT * FROM konyv_profil WHERE konyv_profil.kp_id =  ' + req.body.konyvid, function (err, rows, fields) {
+  connection.query('SELECT * FROM konyv_profil INNER JOIN mufaj ON mufaj.mufaj_id = konyv_profil.mufaj1 INNER JOIN iro_profil ON iro_profil.iro_id = konyv_profil.iro_id WHERE konyv_profil.kp_id = ' + req.body.konyvid, function (err, rows, fields) {
     if (err)
       console.log(err)
     else {
@@ -220,7 +220,7 @@ app.get('/osszes', (req, res) => {
 
 app.post('/osszeskereso', (req, res) => {
   kapcsolat()
-  let parancs = 'SELECT * FROM `konyv_profil` INNER JOIN iro_profil ON iro_profil.iro_id = konyv_profil.iro_id INNER JOIN mufaj ON konyv_profil.mufaj1 = mufaj.mufaj_id WHERE iro_profil.iro_neve LIKE "%'+req.body.bevitel1+'%%" OR mufaj.mufaj_nev LIKE "%'+req.body.bevitel1+'%%" OR konyv_profil.konyv_cime LIKE "%'+req.body.bevitel1+'%%"  ORDER BY `konyv_profil`.`konyv_cime` ASC'
+  let parancs = 'SELECT * FROM `konyv_profil` INNER JOIN iro_profil ON iro_profil.iro_id = konyv_profil.iro_id INNER JOIN mufaj ON konyv_profil.mufaj1 = mufaj.mufaj_id WHERE iro_profil.iro_neve LIKE "%'+req.body.bevitel1+'%%" OR mufaj.mufaj_nev LIKE "%'+req.body.bevitel1+'%%" OR konyv_profil.konyv_cime LIKE "%'+req.body.bevitel1+'%%" OR mufaj.mufaj_nev LIKE "%'+req.body.bevitel1+'%%" OR konyv_profil.alcim LIKE "%'+req.body.bevitel1+'%%"  ORDER BY `konyv_profil`.`konyv_cime` ASC'
   connection.query(parancs, function (err, rows, fields) {
     if (err) throw err
   
