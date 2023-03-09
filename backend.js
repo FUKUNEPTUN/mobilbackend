@@ -128,6 +128,21 @@ app.post('/foryou', (req, res) => {
   connection.end()
 
 })
+app.post('/kedvenckonyv', (req, res) => {
+  kapcsolat()
+  connection.query('SELECT * FROM mufaj WHERE mufaj_id = (SELECT tag_profil.kedvenc_m1 FROM tag_profil WHERE tag_profil.tp_id = 1) OR mufaj_id = (SELECT tag_profil.kedvenc_m2 FROM tag_profil WHERE tag_profil.tp_id = 1) OR mufaj_id = (SELECT tag_profil.kedvenc_m3 FROM tag_profil WHERE tag_profil.tp_id = 1)', function (err, rows, fields) {
+    if (err)
+      console.log(err)
+    else {
+      console.log(rows)
+      res.send(rows)
+    }
+
+  })
+
+  connection.end()
+
+})
 
 app.get('/login', (req, res) => {
   kapcsolat()
